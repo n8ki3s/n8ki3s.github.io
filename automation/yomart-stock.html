@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>요마트 재고입력 자동화 — JONGSOO.QA</title>
+  <meta name="description" content="Slack 봇과 Jenkins로 요마트 스테이징 매장의 재고 입력을 자동화한 사내 도구">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="detail">
+  <header class="topbar">
+    <a class="brand" href="../index.html">JONGSOO.QA</a>
+    <nav>
+      <a class="back" href="../index.html#automation">← AUTOMATION</a>
+      <a href="#flow">FLOW</a>
+      <a href="#input">INPUT</a>
+      <a href="#precheck">PRECHECK</a>
+      <a href="#issue">ISSUE</a>
+      <a href="#notify">NOTIFY</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">위대한상상 (요기요) · AUTOMATION 04</p>
+        <h1>요마트 재고입력 자동화</h1>
+        <p class="hero-summary">
+          요마트 스테이징 매장에 재고를 넣으려면 백오피스의 여러 화면에서 설정을 확인하고, 토큰을 만들어 API를 직접 호출해야 했습니다.
+          이 과정을 Slack 모달 하나로 옮기고, 사전 조건 검사와 결과 알림까지 자동으로 처리하도록 만들었습니다.
+        </p>
+        <ul class="chips">
+          <li>SLACK BOLT</li>
+          <li>WORKFLOW BUILDER</li>
+          <li>JENKINS REMOTE TRIGGER</li>
+          <li>PYTHON</li>
+          <li>REST API</li>
+          <li>INPUT VALIDATION</li>
+        </ul>
+      </div>
+
+      <aside class="why">
+        <span class="tag">AT A GLANCE</span>
+        <article>
+          <p class="why-key">01 · INPUT</p>
+          <h2>모달 하나로 입력합니다.</h2>
+          <p>매장 vendorId, 상품코드·수량 배열, 스테이징 서버를 한 화면에서 입력합니다. 여러 상품의 재고를 한 번에 넣을 수 있습니다.</p>
+        </article>
+        <article>
+          <p class="why-key">02 · PRECHECK</p>
+          <h2>막히는 지점을 먼저 찾습니다.</h2>
+          <p>API를 호출하기 전에 백오피스 사전 조건을 차례로 검사하고, 조건을 만족하지 않으면 해당 단계에서 멈춥니다.</p>
+        </article>
+        <article>
+          <p class="why-key">03 · NOTIFY</p>
+          <h2>고칠 곳까지 알려 줍니다.</h2>
+          <p>실패하면 막힌 단계의 메시지와 수정할 백오피스 화면 링크를 Slack 채널로 함께 보냅니다.</p>
+        </article>
+      </aside>
+    </section>
+
+    <section class="floor" id="flow">
+      <div class="floor-head">
+        <h2 class="floor-title">- FLOW</h2>
+        <p class="floor-sub">입력부터 알림까지,<br>세 단계로.</p>
+        <p class="floor-lead">Slack 봇이 입력값을 파라미터로 Jenkins 잡을 호출하고, Jenkins 잡이 Python 코드를 실행한 뒤 결과를 Slack 채널로 알립니다.</p>
+      </div>
+
+      <div class="flow">
+        <div class="flow-step">
+          <p class="step-key">STEP 01 · SLACK BOT</p>
+          <h3>입력과 검증</h3>
+          <p>Slack 모달에서 입력값을 받고, 상품코드가 배열 형식인지 검증한 뒤 입력값을 파라미터로 Jenkins 잡을 호출합니다.</p>
+          <small>Bolt + Workflow Builder</small>
+        </div>
+        <div class="flow-step dark">
+          <p class="step-key">STEP 02 · JENKINS JOB</p>
+          <h3>스크립트 실행</h3>
+          <p>외부에서 URL과 토큰으로 실행할 수 있도록 설정했고, 전달받은 파라미터로 Python 스크립트를 실행합니다. Jenkins에서 수동으로 실행할 수도 있습니다.</p>
+          <small>Remote Trigger · Parameterized Build</small>
+        </div>
+        <div class="flow-step soft">
+          <p class="step-key">STEP 03 · SLACK CHANNEL</p>
+          <h3>결과 알림</h3>
+          <p>스크립트가 수행한 결과나 에러를 QE 자동화 채널로 알립니다.</p>
+          <small>Success · Fail + Link</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="floor" id="input">
+      <div class="floor-head">
+        <h2 class="floor-title">- INPUT</h2>
+        <p class="floor-sub">잘못된 입력은,<br>실행 전에 걸러 냅니다.</p>
+        <p class="floor-lead">상품코드는 백오피스의 '벤더관리 &gt; 상품' 탭에서 확인한 값을 그대로 입력합니다. 라이브 서버는 보안상 선택할 수 없도록 막았습니다.</p>
+      </div>
+
+      <p class="sub-title">SLACK MODAL</p>
+      <div class="spec">
+        <div class="row head"><span>FIELD</span><span>TYPE</span><span>RULE</span></div>
+        <div class="row">
+          <b>YGYvendorId</b>
+          <span>plain input</span>
+          <p>재고를 입력할 매장의 vendorId를 입력합니다.</p>
+        </div>
+        <div class="row">
+          <b>skuCode</b>
+          <span>multiline plain input</span>
+          <div>
+            <p><code>[상품코드,수량]</code> 형식의 배열만 허용합니다.</p>
+            <p>1개 상품: <code>[cata_man001,9]</code></p>
+            <p>n개 상품: <code>[cata_man001,9],[cata_man002,10], …</code></p>
+          </div>
+        </div>
+        <div class="row">
+          <b>server</b>
+          <span>select</span>
+          <p>스테이징과 A~H 스테이징 중에서 선택합니다. 라이브 서버는 선택지에 없습니다.</p>
+        </div>
+      </div>
+
+      <div class="spec" style="--cols: 180px 1fr">
+        <div class="row head"><span>JENKINS PARAMETER</span><span>DESCRIPTION</span></div>
+        <div class="row"><b>argv1</b><p>YGYvendorId</p></div>
+        <div class="row"><b>argv2</b><p>상품코드와 수량 배열 (예: <code>[9999,999999],[1111,1]</code>)</p></div>
+        <div class="row"><b>argv3</b><p>스테이징 서버 (예: <code>e</code>)</p></div>
+      </div>
+    </section>
+
+    <section class="floor" id="precheck">
+      <div class="floor-head">
+        <h2 class="floor-title">- PRECHECK</h2>
+        <p class="floor-sub">API를 부르기 전에,<br>조건부터 확인합니다.</p>
+        <p class="floor-lead">재고 API는 백오피스 설정이 하나라도 빠지면 실패합니다. 스크립트는 아래 순서로 조건을 검사하고, 실패하면 해당 단계의 메시지를 남기고 멈춥니다.</p>
+      </div>
+
+      <ol class="checks">
+        <li>
+          <div><h3>내부재고 설정 확인</h3><p>체인/벤더 그룹관리에서 Franchise 정보를 조회해, 재고 연동 API 항목이 '내부재고'로 설정되어 있는지 확인합니다.</p></div>
+          <span class="fail">“체인/벤더 그룹관리에서 '내부재고'를 설정해주세요!” + URL</span>
+        </li>
+        <li>
+          <div><h3>key · code · secret 등록 확인</h3><p>같은 Franchise 정보에서 key, code, secret이 모두 등록되어 있는지 확인합니다.</p></div>
+          <span class="fail">미등록 항목 안내 + URL</span>
+        </li>
+        <li>
+          <div><h3>key · code · secret 중복 확인</h3><p>같은 스테이징 안에서 key:code:secret 조합이 다른 프랜차이즈와 겹치지 않는 유니크한 값인지 확인합니다.</p></div>
+          <span class="fail">중복 안내 + URL</span>
+        </li>
+        <li>
+          <div><h3>토큰 생성</h3><p>key, code, secret을 조합하고 암호화 라이브러리로 암호화해 토큰을 생성합니다.</p></div>
+          <span class="fail ok">자동 처리</span>
+        </li>
+        <li>
+          <div><h3>vendor code 확인</h3><p>벤더 관리에서 YGYvendorId의 기본 정보를 조회해, vendor code가 등록되어 있는지 확인합니다.</p></div>
+          <span class="fail">“벤더 관리에서 'vendor code'를 입력해주세요!” + URL</span>
+        </li>
+        <li>
+          <div><h3>재고 API 호출</h3><p>vendor code와 토큰, 상품코드와 수량으로 재고 입력 API를 호출합니다.</p></div>
+          <span class="fail ok">성공 메시지 전송</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="floor" id="issue">
+      <div class="floor-head">
+        <h2 class="floor-title">- ISSUE</h2>
+        <p class="floor-sub">필요한 API가 없을 때,<br>있는 API로 풀었습니다.</p>
+        <p class="floor-lead">구현 중에 만난 제약과 선택한 해결 방법, 그리고 그 방법이 가진 한계입니다.</p>
+      </div>
+
+      <div class="spec" style="--cols: 1fr 1.6fr 1fr">
+        <div class="row head"><span>ISSUE</span><span>SOLUTION</span><span>TRADE-OFF</span></div>
+        <div class="row">
+          <p><b>중복 체크를 위한 API가 없음</b></p>
+          <p>같은 스테이징에 있는 프랜차이즈 목록 API를 전체 조회하고, '내부재고'로 설정된 프랜차이즈의 key:code:secret 조합값을 순차적으로 비교했습니다.</p>
+          <p>프랜차이즈가 늘어날수록 조회와 비교에 드는 시간이 길어질 수 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="floor" id="notify">
+      <div class="floor-head">
+        <h2 class="floor-title">- NOTIFY</h2>
+        <p class="floor-sub">실패는 고칠 곳과 함께,<br>성공은 짧게.</p>
+        <p class="floor-lead">수행 결과는 비공개 QE 자동화 채널로 전송합니다. 실패 메시지에는 수정해야 할 백오피스 화면 링크를 함께 붙입니다.</p>
+      </div>
+
+      <div class="split">
+        <div class="msg fail">
+          <p class="msg-head">FAIL · 사전 조건 미충족</p>
+          <p>체인/벤더 그룹관리에서 '내부재고'를 설정해주세요!</p>
+          <span class="link">백오피스 · 체인/벤더 그룹관리 화면 링크</span>
+        </div>
+        <div class="msg ok">
+          <p class="msg-head">SUCCESS · 재고 입력 완료</p>
+          <p>{vendorId} 매장에 재고 입력이 성공하였습니다! 🙂</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="contact">
+      <div>
+        <p class="brand">JONGSOO.QA</p>
+        <p>팀이 반복하던 일을 도구로 옮겨, 검증에 쓸 시간을 확보합니다.</p>
+      </div>
+      <a href="./tc-generator.html">← 이전 · TC Generator Agent</a>
+      <a href="./adwitt.html">다음 · Adwitt Test Automation →</a>
+    </footer>
+  </main>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

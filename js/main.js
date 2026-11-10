@@ -1,5 +1,5 @@
 // Highlight the nav link of the section currently in view.
-const links = [...document.querySelectorAll('.topbar nav a')];
+const links = [...document.querySelectorAll('.topbar nav a[href^="#"]')];
 const targets = links.map((a) => document.querySelector(a.getAttribute('href'))).filter(Boolean);
 
 const observer = new IntersectionObserver((entries) => {

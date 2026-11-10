@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TC Generator Agent — JONGSOO.QA</title>
+  <meta name="description" content="Jira 티켓 하나로 PRD·Figma·Tech Spec을 분석하고 근거 기반 TC를 생성하는 AI 에이전트">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="detail">
+  <header class="topbar">
+    <a class="brand" href="../index.html">JONGSOO.QA</a>
+    <nav>
+      <a class="back" href="../index.html#automation">← AUTOMATION</a>
+      <a href="#background">BACKGROUND</a>
+      <a href="#pipeline">PIPELINE</a>
+      <a href="#contribution">CONTRIBUTION</a>
+      <a href="#result">RESULT</a>
+      <a href="#structure">STRUCTURE</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">핀다 (FINDA) · AUTOMATION 03</p>
+        <h1>TC Generator Agent</h1>
+        <p class="hero-summary">
+          Jira QA 요청 티켓 URL 하나로 PRD·Figma·Tech Spec 분석부터 테스트 케이스 생성, 스프레드시트 등록까지 처리하는 AI 에이전트를 만들고 운영합니다.
+          설계부터 구현, 운영까지 혼자 맡고 있습니다.
+        </p>
+<pre class="code">이 티켓 분석해줘.
+<span class="s">{JIRA URL}/FQA-XXXX</span>
+<span class="c"># 입력은 이 한 줄이 전부이고, 이후 과정은 자동으로 이어집니다.</span></pre>
+        <ul class="chips">
+          <li>CLAUDE CODE</li>
+          <li>KIRO</li>
+          <li>CODEX</li>
+          <li>FIGMA MCP</li>
+          <li>JIRA / CONFLUENCE API</li>
+          <li>GOOGLE SHEETS API</li>
+          <li>2026.05—NOW</li>
+        </ul>
+      </div>
+
+      <aside class="why">
+        <span class="tag">AT A GLANCE</span>
+        <article>
+          <p class="why-key">01 · SSOT</p>
+          <h2>규칙은 한 곳에만 둡니다.</h2>
+          <p>규칙 하나를 고치면 Claude Code, Kiro, Codex에 동시에 반영됩니다.</p>
+        </article>
+        <article>
+          <p class="why-key">02 · GATE</p>
+          <h2>확정 전에는 TC를 만들지 않습니다.</h2>
+          <p>문서끼리 내용이 다르면 체크리스트로 사용자의 확정을 받은 뒤에만 다음 단계로 넘어갑니다.</p>
+        </article>
+        <article>
+          <p class="why-key">03 · SCOPE</p>
+          <h2>피처 15개, 규칙 승격 13건.</h2>
+          <p>2026년 5월부터 피처 15개를 이 구조로 처리했고, 리뷰 피드백 13건을 모두 규칙으로 승격했습니다.</p>
+        </article>
+      </aside>
+    </section>
+
+    <section class="floor" id="background">
+      <div class="floor-head">
+        <h2 class="floor-title">- BACKGROUND</h2>
+        <p class="floor-sub">추측으로 채운 TC를,<br>근거로 채운 TC로.</p>
+        <p class="floor-lead">처음에는 Kiro IDE에서 PRD와 Figma를 분석해 TC를 만드는 방식으로 시작했습니다. 운영하면서 아래 문제가 드러났고, 규칙을 한 곳(SSOT)으로 모으고 사용자가 확정한 내용만 TC에 반영하는 구조로 다시 구성했습니다.</p>
+      </div>
+
+      <ol class="checks">
+        <li>
+          <div><h3>교차 검증에 시간이 오래 걸림</h3><p>PRD·Figma·Tech Spec을 사람이 하나씩 열어 교차 검증하다 보니 시간이 오래 걸리고 놓치는 항목이 생겼습니다.</p></div>
+          <span class="fail ok">충돌·미정의 항목을 체크리스트로 확정</span>
+        </li>
+        <li>
+          <div><h3>근거 없는 기대 결과</h3><p>"보통 이렇게 동작하겠지"라는 추측으로 기대 결과를 채워서, 리뷰 때마다 근거를 묻는 질문이 나왔습니다.</p></div>
+          <span class="fail ok">근거 인정·불인정 기준을 정하고, TC 생성 후 셀프 체크를 강제</span>
+        </li>
+        <li>
+          <div><h3>도구마다 다른 프롬프트</h3><p>AI 도구마다 규칙을 따로 설명해야 해서 Claude Code용, Kiro용 프롬프트가 따로 존재했습니다.</p></div>
+          <span class="fail ok">규칙을 SSOT로 통합하고, 도구별 진입 파일은 포인터만 유지</span>
+        </li>
+        <li>
+          <div><h3>이어받을 때마다 처음부터</h3><p>세션이 끊기거나 다른 사람이 이어받으면 어디까지 진행했는지 처음부터 다시 확인해야 했습니다.</p></div>
+          <span class="fail ok">진행 상태를 meta.json 파일로 기록</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="floor" id="pipeline">
+      <div class="floor-head">
+        <h2 class="floor-title">- PIPELINE</h2>
+        <p class="floor-sub">티켓 하나에서,<br>등록된 TC까지.</p>
+        <p class="floor-lead">중간에 확정 게이트를 두어, 이해충돌이 있으면 사용자가 확정하기 전까지 TC 생성 단계로 넘어가지 않습니다. 티켓 대신 PRD와 Figma를 직접 제공해도 같은 흐름으로 처리합니다.</p>
+      </div>
+
+      <ol class="checks">
+        <li>
+          <div><h3>Jira Epic 생성</h3><p>Epic을 만들고 QA 요청 티켓을 Parent로 연결합니다.</p></div>
+          <span class="fail">Jira REST API</span>
+        </li>
+        <li>
+          <div><h3>입력 수집</h3><p>티켓에서 디자인닥, Figma, Tech Spec 링크를 자동으로 추출합니다.</p></div>
+          <span class="fail">Confluence API · 링크 추출</span>
+        </li>
+        <li>
+          <div><h3>PRD 분석</h3><p>화면 정책, 비즈니스 규칙, 에러 정책을 정리합니다. 취소선은 폐기로, TBD는 미확정으로 처리합니다.</p></div>
+          <span class="fail">prd-analysis-rules.md</span>
+        </li>
+        <li>
+          <div><h3>Figma 분석</h3><p>화면 프레임, 플로우차트, annotation, 핸드오프 노트를 분석합니다.</p></div>
+          <span class="fail">Figma MCP</span>
+        </li>
+        <li>
+          <div><h3>Tech Spec 분석</h3><p>API 분기 조건과 에러 코드를 PRD·Figma와 대조합니다. Tech Spec이 제공된 경우에만 수행합니다.</p></div>
+          <span class="fail">tech-spec-analysis-rules.md</span>
+        </li>
+        <li class="gate">
+          <div><h3>이해충돌 검토 · 확정 게이트</h3><p>문서 간 충돌과 미정의 항목을 체크리스트 HTML로 만들고, 사용자가 확정하기 전까지 다음 단계로 진행하지 않습니다.</p></div>
+          <span class="fail gate">GATE · 사용자 확정</span>
+        </li>
+        <li>
+          <div><h3>통합 명세 · TC 생성</h3><p>확정된 내용으로 통합 명세를 만들고, TC를 md와 html로 생성합니다.</p></div>
+          <span class="fail">test-case-rules.md</span>
+        </li>
+        <li>
+          <div><h3>셀프 체크</h3><p>표준 커버리지 11종을 화면마다 대조한 결과를 파일로 출력해야 완료로 처리합니다.</p></div>
+          <span class="fail">selfcheck.md</span>
+        </li>
+        <li>
+          <div><h3>등록</h3><p>확정된 TC를 Google Sheets에 등록하고, 시트 링크를 Jira Epic에 등록합니다.</p></div>
+          <span class="fail ok">Google Sheets API · Jira</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="floor" id="contribution">
+      <div class="floor-head">
+        <h2 class="floor-title">- CONTRIBUTION</h2>
+        <p class="floor-sub">어떤 도구로 돌려도,<br>같은 기준의 TC.</p>
+        <p class="floor-lead">에이전트가 임의로 판단하는 지점을 줄이고, 누가 어떤 도구로 실행해도 같은 결과가 나오도록 다섯 가지 장치를 만들었습니다.</p>
+      </div>
+
+      <div class="modules">
+        <div class="module dark">
+          <p class="role-line">01 · SSOT</p>
+          <h3 class="ko">멀티 AI 도구 지원</h3>
+          <ul>
+            <li>규칙은 <b>docs/ai-collaboration/policies/</b>에 한 벌만 둡니다.</li>
+            <li>AGENTS.md, CLAUDE.md, .kiro/steering/은 규칙을 복제하지 않고 정책 문서를 가리키기만 합니다.</li>
+            <li>규칙 하나를 고치면 Claude Code·Kiro·Codex에 동시에 반영됩니다.</li>
+          </ul>
+        </div>
+        <div class="module">
+          <p class="role-line">02 · EVIDENCE</p>
+          <h3 class="ko">근거 기반 원칙과 체크리스트</h3>
+          <ul>
+            <li>기대 결과에 넣을 수 있는 근거와 넣을 수 없는 근거를 명확히 나눴습니다.</li>
+            <li>문서끼리 내용이 다르면 에이전트가 임의로 고르지 않고 체크리스트 HTML을 생성합니다.</li>
+            <li>PO·PM도 브라우저만 열면 "PRD 기준" / "Figma 기준" / "확인 필요"를 고르고 코멘트를 남길 수 있습니다.</li>
+          </ul>
+        </div>
+        <div class="module soft">
+          <p class="role-line">03 · SELF CHECK</p>
+          <h3 class="ko">셀프 체크 강제</h3>
+          <ul>
+            <li>표준 커버리지 11종을 화면마다 대조합니다.</li>
+            <li>커버리지 매트릭스, 11종 대조, 확정 이력 대조, 회귀/영향도 대조의 4개 표를 모두 출력해야 완료로 처리합니다.</li>
+            <li>명세에 동작 정의가 없으면 추측으로 채우지 않고 미정의 항목으로 올립니다.</li>
+          </ul>
+        </div>
+        <div class="module">
+          <p class="role-line">04 · FEEDBACK → RULE</p>
+          <h3 class="ko">피드백을 규칙으로 승격</h3>
+          <ul>
+            <li>리뷰 피드백은 TC 수정으로 끝내지 않고, 원인을 진단한 뒤 규칙으로 승격합니다.</li>
+            <li>피드백 로그에 날짜·피처·원인·적용 규칙을 남기고, 13건을 모두 정책 문서에 반영했습니다.</li>
+            <li>예: 분기 ON 케이스만 쓰고 OFF 회귀 TC를 누락한 건 → 셀프 체크에 "회귀/영향도 대조" 표를 필수로 추가했습니다.</li>
+          </ul>
+        </div>
+        <div class="module">
+          <p class="role-line">05 · HANDOFF</p>
+          <h3 class="ko">세션 핸드오프와 산출물 고정</h3>
+          <ul>
+            <li>피처 폴더마다 meta.json에 Jira Epic·스프레드시트 URL과 status·lastStep을 기록합니다.</li>
+            <li>세션이 끊기거나 다른 AI 도구로 바꿔도 다시 묻지 않고 이어서 작업합니다.</li>
+            <li>피처마다 산출물 5종과 meta.json을 한 세트로 고정했습니다.</li>
+          </ul>
+        </div>
+        <div class="module dark">
+          <p class="role-line">+ · COVERAGE 11</p>
+          <h3 class="ko">표준 커버리지 11종</h3>
+          <ul>
+            <li>상태·예외 8종
+              <ul class="tags"><li>Empty</li><li>Disabled</li><li>Loading</li><li>Network failure</li><li>Validation</li><li>Deeplink</li><li>Back gesture</li><li>앱 재진입</li></ul>
+            </li>
+            <li>교차 점검 3종
+              <ul class="tags soft"><li>AOS/iOS 차이</li><li>기존 기능 영향도</li><li>회귀 영역</li></ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="split" style="margin-top: 28px">
+        <div class="msg ok">
+          <p class="msg-head">EVIDENCE · 근거로 인정</p>
+          <p>PRD 텍스트 · Figma UI 요소 · 플로우차트 화살표 · 핸드오프 노트 · Tech Spec</p>
+        </div>
+        <div class="msg fail">
+          <p class="msg-head">NOT EVIDENCE · 근거로 인정하지 않음</p>
+          <p>업계 관행 · 유사 서비스 유추 · 기술적 구현 가정</p>
+        </div>
+      </div>
+
+      <p class="sub-title" style="margin-top: 28px">POLICY DOCUMENTS</p>
+      <div class="spec" style="--cols: 260px 1fr">
+        <div class="row head"><span>DOCUMENT</span><span>CORE CONSTRAINT</span></div>
+        <div class="row"><b>qa-workflow.md</b><p>단계 순서를 강제하고, 확정 전에는 TC 생성을 금지하며, 산출물은 파일로 저장합니다.</p></div>
+        <div class="row"><b>prd-analysis-rules.md</b><p>취소선은 폐기로 보고, 회의록은 확정된 결론만 반영하며, Confluence API로 자동 수집합니다.</p></div>
+        <div class="row"><b>figma-analysis-rules.md</b><p>핸드오프 노트를 반드시 확인하고, 네비게이션 요소를 감지하며, 기존 명세와의 충돌을 검토합니다.</p></div>
+        <div class="row"><b>tech-spec-analysis-rules.md</b><p>API 분기 조건과 에러 코드를 PRD·Figma와 대조합니다.</p></div>
+        <div class="row"><b>test-case-rules.md</b><p>근거 없는 내용과 디자인 디테일을 제외하고, 미정의 항목은 태그로 분리합니다.</p></div>
+      </div>
+
+      <div class="spec" style="--cols: 300px 1fr">
+        <div class="row head"><span>OUTPUT · 피처당 1세트</span><span>CONTENT</span></div>
+        <div class="row"><b>{feature-name}.md</b><p>통합 명세</p></div>
+        <div class="row"><b>{feature-name}-checklist.html</b><p>이해충돌 체크리스트</p></div>
+        <div class="row"><b>{feature-name}-test-cases.md</b><p>TC 마크다운</p></div>
+        <div class="row"><b>{feature-name}-test-cases.html</b><p>TC HTML</p></div>
+        <div class="row"><b>{feature-name}-selfcheck.md</b><p>셀프 체크 결과 (커버리지 매트릭스 · 11종 대조 · 확정 이력 · 회귀/영향도)</p></div>
+        <div class="row"><b>meta.json</b><p>Jira Epic·스프레드시트 URL, 진행 상태</p></div>
+      </div>
+    </section>
+
+    <section class="floor" id="result">
+      <div class="floor-head">
+        <h2 class="floor-title">- RESULT</h2>
+        <p class="floor-sub">반년 동안,<br>피처 15개.</p>
+        <p class="floor-lead">2026년 5월부터 11월까지 피처 15개를 이 구조로 처리했습니다.</p>
+      </div>
+
+      <div class="spec" style="--cols: 140px 1fr">
+        <div class="row head"><span>MONTH</span><span>FEATURES</span></div>
+        <div class="row"><b>2026.05</b><p>차번호 입력 프로모션 · 쿠폰함 · MSD 인앱 바텀시트</p></div>
+        <div class="row"><b>2026.06</b><p>FAAS 프로모션 · 대출 프로모션(7월)</p></div>
+        <div class="row"><b>2026.07</b><p>신용점수 올리기 마이데이터 연결</p></div>
+        <div class="row"><b>2026.08</b><p>쿠폰함 2차 개선 · 코스피 예측 프로모션</p></div>
+        <div class="row"><b>2026.09</b><p>대출한도 친구추천 프로모션 · 통합대출 플로우 · 달러 예측 프로모션</p></div>
+        <div class="row"><b>2026.10</b><p>신용점수 올리기 전자서명 · 코스피 예측 프로모션</p></div>
+        <div class="row"><b>2026.11</b><p>신용점수 예측 프로모션 · 대출한도 프로모션(11월)</p></div>
+      </div>
+
+      <p class="sub-title" style="margin-top: 28px">CASE · 차번호 입력 프로모션</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <span class="tl-date">PRD 수집</span>
+          <p style="margin:0; font-size:13px">Confluence PRD 1건을 API로 자동 수집했습니다.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-date">Figma 분석</span>
+          <p style="margin:0; font-size:13px">기획안을 분석하던 중 최종 디자인 파일이 따로 있는 것을 확인하고, 최종 디자인을 기준으로 다시 분석했습니다.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-date">이해충돌 검토</span>
+          <p style="margin:0; font-size:13px">충돌 <mark>10건</mark>을 발견해 체크리스트로 사용자의 확정을 받았습니다.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-date">PRD 변경 반영</span>
+          <p style="margin:0; font-size:13px">상단 네비게이션 변경과 유효성 검증 방식 변경을 즉시 반영했습니다.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-date">TC 생성</span>
+          <p style="margin:0; font-size:13px">최초 <mark>32건</mark>을 생성했습니다 (High 16 / Medium 12 / Low 4).</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-date">피드백 반영</span>
+          <p style="margin:0; font-size:13px">진입 경로를 분리하고, 선택·미선택 양쪽 케이스를 작성하는 규칙을 승격해 TC에 반영했습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="floor" id="structure">
+      <div class="floor-head">
+        <h2 class="floor-title">- STRUCTURE</h2>
+        <p class="floor-sub">규칙은 한 벌,<br>진입점은 도구별로.</p>
+        <p class="floor-lead">도구별 진입 파일은 정책 문서를 가리키기만 하고, 산출물은 피처 폴더 하나에 모읍니다.</p>
+      </div>
+
+<pre class="code">finda-tc-agent/
+├── AGENTS.md                       <span class="c"># 공통 진입점 (Codex 등)</span>
+├── CLAUDE.md                       <span class="c"># Claude Code 진입점 (@AGENTS.md import)</span>
+├── docs/ai-collaboration/
+│   ├── policies/                   <span class="c"># 규칙 SSOT (한 벌만 존재)</span>
+│   │   └── reference/              <span class="c"># 셀프 체크·Jira 연동 등 상세 절차</span>
+│   └── tools/                      <span class="c"># 도구별 진입 방식 (claude-code/kiro/codex)</span>
+├── .kiro/steering/                 <span class="c"># Kiro 포인터 (policies 참조)</span>
+├── aidlc-docs/features/{피처명}/   <span class="c"># 산출물 5종 + meta.json</span>
+├── examples/                       <span class="c"># 품질 벤치마크 결과물</span>
+└── scripts/                        <span class="c"># Jira Epic 생성 스크립트</span></pre>
+    </section>
+
+    <footer class="contact">
+      <div>
+        <p class="brand">JONGSOO.QA</p>
+        <p>에이전트가 추측하는 자리를 줄이고, 사람이 확정하는 자리를 남깁니다.</p>
+      </div>
+      <a href="./finda-automation.html">← 이전 · Finda Automation</a>
+      <a href="./yomart-stock.html">다음 · 요마트 재고입력 자동화 →</a>
+    </footer>
+  </main>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>
