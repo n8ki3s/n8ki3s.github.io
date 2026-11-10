@@ -16,7 +16,7 @@
     <nav>
       <a href="#its-me">It&#39;s ME</a>
       <a href="#journey">QUALITY JOURNEY</a>
-      <a href="#lab">AUTOMATION LAB</a>
+      <a href="#automation">AUTOMATION</a>
       <a href="#contact">CONTACT</a>
     </nav>
   </header>
@@ -101,7 +101,7 @@
           <ul class="result">
             <li>체크아웃 · 할인 · 쿠폰 · <mark>요기패스</mark> 검증</li>
             <li>Katalon <mark>UI 자동화</mark></li>
-            <li>재고 입력 · 테스트 주문 생성 <mark>Slack 봇</mark></li>
+            <li>재고 입력 · 테스트 주문 생성 <mark>Slack 봇</mark> (Jenkins 연동)</li>
             <li>로봇배달 주문유형 검증</li>
           </ul>
           <span class="term">2021.11—2024.09</span>
@@ -112,7 +112,7 @@
           <div><h3>와이즈버즈 (wisebirds)</h3><p>광고 솔루션의 요구사항 분석부터 TC 설계, 수행, 결과 보고까지 맡고 UI 자동화 스크립트를 유지보수했습니다.</p></div>
           <span class="role">테스트 엔지니어</span>
           <ul class="result">
-            <li>Selenium <mark>UI 자동화</mark> 작성 · 유지보수</li>
+            <li>캠페인 목적 13종 Selenium <mark>UI 자동화</mark> 작성 · 유지보수</li>
             <li>아프리카TV · 네이버 Band · 다우기술 광고 솔루션</li>
             <li>ADWITT 1.0 / 1.1 모듈화 검증</li>
           </ul>
@@ -154,11 +154,11 @@
       </div>
     </section>
 
-    <section class="floor" id="lab">
+    <section class="floor" id="automation">
       <div class="floor-head">
-        <h2 class="floor-title">- AUTOMATION LAB</h2>
+        <h2 class="floor-title">- AUTOMATION</h2>
         <p class="floor-sub">설명보다,<br>돌아가는 자동화.</p>
-        <p class="floor-lead">반복을 줄이기 위해 직접 설계하고 만든 도구들입니다. 실제 업무에서 매일 쓰이는 것을 기준으로 만들었습니다.</p>
+        <p class="floor-lead">반복을 줄이기 위해 직접 설계하고 만든 도구들입니다. 웹 UI 회귀부터 사내 업무 봇, 모바일 실기기 회귀까지 실제 업무에서 쓰이는 것을 기준으로 만들었습니다.</p>
       </div>
 
       <div class="cards">
@@ -171,7 +171,7 @@
             <dt>STACK</dt><dd>Go · UIAutomator2 · WebDriverAgent · Python · Vault · Codex CLI</dd>
             <dt class="hl">RESULT</dt><dd>플로우 44개 · 스텝 약 3,300개를 하나의 YAML로 두 OS에서 실행합니다. 회귀 시간은 Android 약 79%, iOS 약 51% 줄었습니다.</dd>
           </dl>
-          <span class="card-foot">사내 저장소 · 비공개</span>
+          <span class="card-foot">핀다 (FINDA) · 사내 저장소 · 비공개</span>
         </article>
 
         <article class="card dark">
@@ -183,7 +183,7 @@
             <dt>STACK</dt><dd>Python · Maestro YAML</dd>
             <dt class="hl">RESULT</dt><dd>시나리오 작성자는 OS 차이를 몰라도 되고, 생성된 플로우는 러너에서 그대로 실행됩니다.</dd>
           </dl>
-          <a class="card-foot" href="https://github.com/n8ki3s/txt2maestro" target="_blank" rel="noopener">▶ GitHub에서 보기 →</a>
+          <span class="card-foot">핀다 (FINDA) · <a href="https://github.com/n8ki3s/txt2maestro" target="_blank" rel="noopener">▶ GitHub에서 보기 →</a></span>
         </article>
 
         <article class="card">
@@ -195,7 +195,31 @@
             <dt>STACK</dt><dd>Jira · Confluence · Figma MCP · Kiro / Claude Code / Codex</dd>
             <dt class="hl">RESULT</dt><dd>작업 규칙을 SSOT로 관리해 어떤 AI 도구에서 실행해도 같은 기준의 TC가 나옵니다.</dd>
           </dl>
-          <span class="card-foot">사내 저장소 · 비공개</span>
+          <span class="card-foot">핀다 (FINDA) · 사내 저장소 · 비공개</span>
+        </article>
+
+        <article class="card dark">
+          <div class="card-head"><span>SLACK BOT · JENKINS</span><b>04</b></div>
+          <h3>요마트 재고입력 자동화</h3>
+          <dl>
+            <dt>PAIN POINT</dt><dd>스테이징 매장에 재고를 넣으려면 백오피스에서 내부재고 설정, key·code·secret, vendor code를 하나씩 확인하고 토큰을 만들어 API를 직접 호출해야 했습니다. 설정이 빠지면 어느 단계에서 막혔는지 찾기도 어려웠습니다.</dd>
+            <dt>APPROACH</dt><dd>Slack 모달에서 vendorId, 상품코드·수량 배열, 스테이징 서버를 입력하면 입력값을 검증한 뒤 Jenkins 잡을 원격으로 호출합니다. Python 스크립트가 백오피스 사전 조건을 차례로 검사하고, key·code·secret을 조합·암호화한 토큰으로 재고 API를 호출합니다. 중복 체크 API가 없어서 프랜차이즈 목록 전체를 조회해 조합값을 비교하도록 구현했습니다.</dd>
+            <dt>STACK</dt><dd>Slack Bolt · Slack Workflow Builder · Jenkins (Remote Trigger) · Python</dd>
+            <dt class="hl">RESULT</dt><dd>여러 상품의 재고를 한 번에 입력합니다. 실패하면 막힌 단계와 수정할 백오피스 화면 링크를, 성공하면 결과를 Slack 채널로 알려 줍니다. 같은 잡을 Jenkins에서 수동으로 실행할 수도 있습니다.</dd>
+          </dl>
+          <span class="card-foot">위대한상상 (요기요) · 사내 도구 · 비공개</span>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><span>WEB UI REGRESSION</span><b>05</b></div>
+          <h3>Adwitt Test Automation</h3>
+          <dl>
+            <dt>PAIN POINT</dt><dd>광고 솔루션 ADWITT은 캠페인 목적이 13종이고 단계마다 등록할 수 있는 소재 유형이 달라서, 배포 전후 기본 기능을 손으로 확인하는 데 시간이 많이 들었습니다.</dd>
+            <dt>APPROACH</dt><dd>전체 목적의 캠페인을 생성하는 Auto 모드와 목적·소재를 지정해 하나만 생성하는 Manual 모드로 나눴습니다. Create·Confirm·Manage 단계마다 소재를 랜덤으로 등록하고, 실패하면 화면을 캡처해 Slack으로 보낸 뒤 다음 목적으로 넘어갑니다.</dd>
+            <dt>STACK</dt><dd>Python · Selenium · Chrome WebDriver · Slack API</dd>
+            <dt class="hl">RESULT</dt><dd>배포 전후 기본 기능 테스트에 사용했습니다. 로딩 딤, 랜덤 id, 레이어 팝업 스크롤 같은 UI 변화를 대기 로직과 셀렉터 전략으로 흡수하며 유지보수했고, 자동화 과정에서 Confirm 단계의 500 에러 결함도 찾아냈습니다.</dd>
+          </dl>
+          <span class="card-foot">와이즈버즈 (wisebirds) · 사내 프로젝트 · 비공개</span>
         </article>
       </div>
     </section>
