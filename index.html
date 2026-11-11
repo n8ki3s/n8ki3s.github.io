@@ -82,12 +82,14 @@
 
         <div class="row dark">
           <span class="stage">06 · FINTECH QE</span>
-          <div><h3>핀다 (FINDA)</h3><p>QA 팀을 이끌며 통합 테스트 설계와 앱 릴리즈 프로세스를 구축하고, 대출 플로우 회귀를 실기기 자동화로 전환했습니다.</p></div>
+          <div><h3>핀다 (FINDA)</h3><p>QA 팀을 이끌며 통합 테스트 설계와 앱 릴리즈 프로세스를 구축하고, 인시던트 관리·재발방지 프로그램을 운영했습니다. 대출 플로우 회귀는 실기기 자동화로 전환했습니다.</p></div>
           <span class="role">Team Lead</span>
           <ul class="result">
             <li>회귀 자동화 <mark>플로우 44개</mark></li>
             <li>회귀 시간 <mark>6시간 → 77분</mark> (Android)</li>
+            <li>Incident 월 평균 <mark>33건 → 2.5건</mark> (92% ↓)</li>
             <li>앱 릴리즈 <mark>프로세스 구축</mark></li>
+            <li>인시던트 관리 · 재발방지 <mark>프로그램 운영</mark></li>
             <li>TC 생성 <mark>agent</mark> 개발</li>
             <li>제휴카드 · 마이데이터 2.0 · 비교대출 · 내 자산</li>
           </ul>
@@ -158,7 +160,7 @@
       <div class="floor-head">
         <h2 class="floor-title">- AUTOMATION</h2>
         <p class="floor-sub">설명보다,<br>돌아가는 자동화.</p>
-        <p class="floor-lead">반복을 줄이기 위해 직접 설계하고 만든 도구들입니다. 웹 UI 회귀부터 사내 업무 봇, 모바일 실기기 회귀까지 실제 업무에서 쓰이는 것을 기준으로 만들었습니다.</p>
+        <p class="floor-lead">반복을 줄이기 위해 직접 설계하고 만든 도구들입니다. 웹 UI 회귀부터 사내 업무 봇, 모바일 실기기 회귀, 운영 지표 대시보드까지 실제 업무에서 쓰이는 것을 기준으로 만들었습니다.</p>
       </div>
 
       <div class="cards">
@@ -175,7 +177,19 @@
         </article>
 
         <article class="card dark">
-          <div class="card-head"><span>SCENARIO CONVERTER</span><b>02</b></div>
+          <div class="card-head"><span>INCIDENT REPORT</span><b>02</b></div>
+          <h3>Incident Dashboard</h3>
+          <dl>
+            <dt>PAIN POINT</dt><dd>Incident 현황은 스프레드시트 수식으로 만든 표와 차트로만 볼 수 있었습니다. 누락된 값은 배경색으로만 드러났고, 연도별로 보면 해를 넘긴 이슈 때문에 완료전이 음수가 되었습니다.</dd>
+            <dt>APPROACH</dt><dd>JIRA → 시트 갱신은 그대로 두고, 시트 수식과 같은 규칙으로 집계하는 Streamlit 대시보드를 만들었습니다. 조건부 서식 규칙을 코드로 옮겨 누락 데이터를 표시하고, 갱신 마커와 실행 잠금으로 자동 반영과 동시 실행 방지를 처리했습니다.</dd>
+            <dt>STACK</dt><dd>Python · Streamlit · pandas · JIRA REST API · gspread · APScheduler · Slack Bolt</dd>
+            <dt class="hl">RESULT</dt><dd>대시보드로 인시던트 관리와 재발방지 프로그램을 운영해, 월 평균 Incident를 <b>33건에서 2.5건으로 약 92%</b> 줄였습니다. 누적 332건 중 302건은 리뷰(재발방지 논의)까지 마쳤습니다.</dd>
+          </dl>
+          <span class="card-foot">핀다 (FINDA) · 사내 저장소 · 비공개 · <a href="./automation/incident-dashboard.html">문서 보기 →</a></span>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><span>SCENARIO CONVERTER</span><b>03</b></div>
           <h3>txt2maestro</h3>
           <dl>
             <dt>PAIN POINT</dt><dd>자연어 시나리오를 실행 시점에 해석하면 결과가 흔들리고, Appium과 LLM 런타임 의존성이 함께 따라옵니다.</dd>
@@ -186,8 +200,8 @@
           <span class="card-foot">핀다 (FINDA) · <a href="https://github.com/n8ki3s/txt2maestro" target="_blank" rel="noopener">GitHub에서 보기 →</a></span>
         </article>
 
-        <article class="card">
-          <div class="card-head"><span>AI TC GENERATOR</span><b>03</b></div>
+        <article class="card dark">
+          <div class="card-head"><span>AI TC GENERATOR</span><b>04</b></div>
           <h3>TC Generator Agent</h3>
           <dl>
             <dt>PAIN POINT</dt><dd>PRD, Figma, Tech Spec을 오가며 TC를 작성하다 보면 문서 간 충돌과 미정의 항목을 놓치기 쉽습니다.</dd>
@@ -198,8 +212,8 @@
           <span class="card-foot">핀다 (FINDA) · 사내 저장소 · 비공개 · <a href="./automation/tc-generator.html">문서 보기 →</a></span>
         </article>
 
-        <article class="card dark">
-          <div class="card-head"><span>SLACK BOT · JENKINS</span><b>04</b></div>
+        <article class="card">
+          <div class="card-head"><span>SLACK BOT · JENKINS</span><b>05</b></div>
           <h3>요마트 재고입력 자동화</h3>
           <dl>
             <dt>PAIN POINT</dt><dd>스테이징 매장에 재고를 넣으려면 백오피스에서 내부재고 설정, key·code·secret, vendor code를 하나씩 확인하고 토큰을 만들어 API를 직접 호출해야 했습니다. 설정이 빠지면 어느 단계에서 막혔는지 찾기도 어려웠습니다.</dd>
@@ -210,8 +224,8 @@
           <span class="card-foot">위대한상상 (요기요) · 사내 저장소 · 비공개 · <a href="./automation/yomart-stock.html">문서 보기 →</a></span>
         </article>
 
-        <article class="card">
-          <div class="card-head"><span>WEB UI REGRESSION</span><b>05</b></div>
+        <article class="card dark">
+          <div class="card-head"><span>WEB UI REGRESSION</span><b>06</b></div>
           <h3>Adwitt Test Automation</h3>
           <dl>
             <dt>PAIN POINT</dt><dd>광고 솔루션 ADWITT은 캠페인 목적이 13종이고 단계마다 등록할 수 있는 소재 유형이 달라서, 배포 전후 기본 기능을 손으로 확인하는 데 시간이 많이 들었습니다.</dd>

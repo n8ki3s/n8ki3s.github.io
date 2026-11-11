@@ -318,3 +318,8 @@ code { overflow-wrap: anywhere; }
 .card-foot a:hover, .card.dark .card-foot a:hover { background: var(--blue); color: var(--white); }
 .card.dark .card-foot a { border-color: var(--accent); }
 .card.dark .card-foot a:hover { border-color: var(--blue); }
+
+/* 상세 문서의 화면 캡처 */
+.shot { margin: 24px 0 0; border: 2px solid var(--rule); background: var(--white); }
+.shot img { display: block; width: 100%; height: auto; }
+.shot figcaption { padding: 10px 14px; border-top: 1.5px solid var(--rule); font-family: var(--mono); font-size: 12px; color: var(--sub); }
