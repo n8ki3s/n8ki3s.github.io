@@ -21,6 +21,7 @@
       <a href="#year">YEAR</a>
       <a href="#check">CHECK</a>
       <a href="#refresh">REFRESH</a>
+      <a href="#pages">PAGES</a>
     </nav>
   </header>
 
@@ -33,6 +34,7 @@
           Incident 이슈 현황은 JIRA 데이터를 스프레드시트에 옮긴 뒤, 수식으로 만든 표와 차트로 확인하고 있었습니다.
           시트를 열어야만 볼 수 있었고, 누락된 값은 배경색으로만 드러났으며, 연도를 넘긴 이슈는 집계 값이 맞지 않았습니다.
           같은 집계 규칙을 코드로 옮기고, 누락 데이터 점검과 자동 갱신까지 갖춘 웹 대시보드로 만들었습니다.
+          서버 PC에 접속할 수 없는 사내망 대역에서도 볼 수 있도록, 같은 화면을 정적 페이지로 만들어 사내 GitHub Pages에 자동 배포합니다.
           이 대시보드로 인시던트 관리와 재발방지 프로그램을 운영한 결과, 월 평균 33건이던 Incident가 월 평균 2.5건으로 줄었습니다.
         </p>
         <ul class="chips">
@@ -43,6 +45,8 @@
           <li>GOOGLE SHEETS (GSPREAD)</li>
           <li>APSCHEDULER</li>
           <li>SLACK BOLT</li>
+          <li>VEGA-LITE</li>
+          <li>GITHUB PAGES</li>
         </ul>
       </div>
 
@@ -61,7 +65,7 @@
         <article>
           <p class="why-key">03 · AUTO REFRESH</p>
           <h2>열어 두기만 하면 됩니다.</h2>
-          <p>정시 배치가 시트를 갱신하면 열려 있는 화면도 1분 안에 다시 그려집니다. 필요하면 버튼으로 바로 JIRA에서 가져옵니다.</p>
+          <p>정시 배치가 시트를 갱신하면 열려 있는 화면도 1분 안에 다시 그려지고, GitHub Pages 정적 페이지도 함께 다시 배포됩니다.</p>
         </article>
       </aside>
     </section>
@@ -101,7 +105,7 @@
       <div class="floor-head">
         <h2 class="floor-title">- FLOW</h2>
         <p class="floor-sub">JIRA에서 화면까지,<br>한 번에 하나씩.</p>
-        <p class="floor-lead">JIRA 필터로 Incident 이슈를 수집해 스프레드시트 Lists 시트에 기록하고, 대시보드는 Lists 시트를 읽어 집계합니다. 기존에 쓰던 시트를 그대로 데이터 원본으로 두었기 때문에, 시트를 보던 사람과 대시보드를 보는 사람이 같은 데이터를 봅니다.</p>
+        <p class="floor-lead">JIRA 필터로 Incident 이슈를 수집해 스프레드시트 Lists 시트에 기록하고, 대시보드는 Lists 시트를 읽어 집계합니다. 기존에 쓰던 시트를 그대로 데이터 원본으로 두었기 때문에, 시트를 보던 사람과 대시보드를 보는 사람이 같은 데이터를 봅니다. 갱신이 끝나면 Streamlit 대시보드와 GitHub Pages 정적 페이지에 같은 화면이 반영됩니다.</p>
       </div>
 
       <div class="arch">
@@ -119,11 +123,13 @@
           </div>
         </div>
         <div class="arch-down">↓ 갱신 마커 기록</div>
+        <div class="arch-node"><b>incident_data.py · incident_dashboard.py</b><span>시트 수식과 같은 규칙으로 집계하고, 표·차트·문구를 함수로 만들어 두 화면이 함께 씁니다</span></div>
+        <div class="arch-down">↓</div>
         <div class="arch-group">
-          <p class="label">Streamlit 대시보드 · main.py가 하위 프로세스로 실행하고 감시</p>
+          <p class="label">main.py가 마커를 보고 두 화면을 함께 갱신</p>
           <div class="arch-row" style="--n:2">
-            <div class="arch-node"><b>incident_data.py</b><span>시트 수식과 같은 규칙으로 집계, 데이터 점검 규칙</span></div>
-            <div class="arch-node dark"><b>incident_dashboard.py</b><span>요약 지표, 월별 차트, 팀별 현황, 팀 × 월 히트맵, 이슈 목록</span></div>
+            <div class="arch-node"><b>Streamlit 대시보드</b><span>서버 PC에서 상시 실행 · 열린 화면 1분 안에 자동 반영</span></div>
+            <div class="arch-node dark"><b>GitHub Pages 정적 페이지</b><span>incident_pages.py → gh-pages 브랜치 · 서버 PC에 닿지 않는 대역에서도 열람</span></div>
           </div>
         </div>
       </div>
@@ -297,6 +303,49 @@
           </ul>
         </div>
       </div>
+    </section>
+
+    <section class="floor" id="pages">
+      <div class="floor-head">
+        <h2 class="floor-title">- PAGES</h2>
+        <p class="floor-sub">서버에 닿지 않는 곳에서도,<br>같은 화면을.</p>
+        <p class="floor-lead">Streamlit 대시보드는 서버 PC에 직접 접속해야 해서, 다른 사내망 대역에서는 열리지 않았습니다. 같은 화면을 서버 없이 볼 수 있는 정적 HTML로 만들어 사내 GitHub Pages에 배포하고, Lists가 갱신될 때마다 자동으로 다시 배포하도록 했습니다.</p>
+      </div>
+
+      <div class="modules">
+        <div class="module dark">
+          <p class="role-line">01 · SAME CODE</p>
+          <h3 class="ko">한 벌의 코드, 두 개의 화면</h3>
+          <ul>
+            <li>대시보드의 표·차트·문구 생성을 함수로 분리해, Streamlit과 정적 페이지가 같은 코드로 그립니다.</li>
+            <li>서버가 없으므로 모든 기간(전체 누적 / 연도별)을 미리 그려 한 장의 HTML에 담고, 탭으로 전환합니다.</li>
+            <li>altair가 만든 차트 스펙을 Vega-Embed로 그립니다. 사내망에서 CDN이 막혀도 보이도록 차트 라이브러리 파일을 함께 배포합니다.</li>
+          </ul>
+        </div>
+        <div class="module">
+          <p class="role-line">02 · DEPLOY</p>
+          <h3 class="ko">작업 트리를 건드리지 않는 배포</h3>
+          <ul>
+            <li>임시 인덱스 파일로 생성물만 담은 커밋을 만들어 gh-pages 브랜치에 push합니다. 작업 중인 브랜치와 스테이징은 그대로 둡니다.</li>
+            <li>배포할 때마다 이력 없는 커밋 하나로 덮어써서, 정시 갱신만으로 하루 11번 배포해도 브랜치 이력이 쌓이지 않습니다.</li>
+            <li>main.py가 1분마다 갱신 마커를 확인하고, 바뀌었으면 배포합니다. 봇을 시작할 때도 한 번 배포합니다.</li>
+          </ul>
+        </div>
+        <div class="module">
+          <p class="role-line">03 · ALERT</p>
+          <h3 class="ko">실패는 한 번만, 복구도 알림</h3>
+          <ul>
+            <li>배포가 실패하면 10분 뒤 다시 시도합니다.</li>
+            <li>실패가 시작될 때 exit 코드, 마지막 오류 줄, 로그 경로를 Slack 채널로 한 번만 알리고, 재시도 중에는 같은 알림을 반복하지 않습니다. 복구되면 복구 알림을 보냅니다.</li>
+            <li>콘솔에는 배포마다 시작·완료(커밋)·실패를, 로그 파일에는 전체 출력을 배포 사유와 함께 남깁니다.</li>
+          </ul>
+        </div>
+      </div>
+
+      <figure class="shot">
+        <img src="./img/incident/pages.png" alt="GitHub Pages로 배포한 Incident 이슈 리포트 정적 페이지 상단" loading="lazy">
+        <figcaption>실제 데이터 · GitHub Pages 정적 페이지 · Lists 갱신 시각과 페이지 생성 시각, 기간 탭</figcaption>
+      </figure>
     </section>
 
     <footer class="contact">

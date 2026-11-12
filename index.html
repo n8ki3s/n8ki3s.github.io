@@ -85,12 +85,12 @@
           <div><h3>핀다 (FINDA)</h3><p>QA 팀을 이끌며 통합 테스트 설계와 앱 릴리즈 프로세스를 구축하고, 인시던트 관리·재발방지 프로그램을 운영했습니다. 대출 플로우 회귀는 실기기 자동화로 전환했습니다.</p></div>
           <span class="role">Team Lead</span>
           <ul class="result">
-            <li>회귀 자동화 <mark>플로우 44개</mark></li>
+            <li>회귀 자동화 플로우 44개</li>
             <li>회귀 시간 <mark>6시간 → 77분</mark> (Android)</li>
-            <li>Incident 월 평균 <mark>33건 → 2.5건</mark> (92% ↓)</li>
+            <li>Incident 월 평균 33건 → 2.5건 <mark>(92% ↓)</mark></li>
             <li>앱 릴리즈 <mark>프로세스 구축</mark></li>
-            <li>인시던트 관리 · 재발방지 <mark>프로그램 운영</mark></li>
-            <li>TC 생성 <mark>agent</mark> 개발</li>
+            <li>인시던트 관리 · <mark>재발방지</mark> 프로그램 운영</li>
+            <li>TC 생성 agent 개발</li>
             <li>제휴카드 · 마이데이터 2.0 · 비교대출 · 내 자산</li>
           </ul>
           <span class="term">2025.04—NOW</span>
@@ -101,15 +101,15 @@
           <div><h3>위대한상상 (요기요)</h3><p>주문·결제와 마케팅·멤버십 파트를 리드했고, 요마트와 라이더 배차 시스템 구축 프로젝트를 검증했습니다.</p></div>
           <span class="role">Order&amp;Payment · Martech QE Part Lead</span>
           <ul class="result">
-            <li>체크아웃 · 할인 · 쿠폰 · <mark>요기패스</mark> 검증</li>
+            <li><mark>요마트</mark> · <mark>요기패스</mark> · <mark>로봇배달</mark> 런칭</li>
             <li>Katalon <mark>UI 자동화</mark></li>
             <li>재고 입력 · 테스트 주문 생성 <mark>Slack 봇</mark> (Jenkins 연동)</li>
-            <li>로봇배달 주문유형 검증</li>
+            <li>체크아웃 · 할인 · 쿠폰 검증</li>
           </ul>
           <span class="term">2021.11—2024.09</span>
         </div>
 
-        <div class="row soft">
+        <div class="row">
           <span class="stage">04 · AD-TECH QA</span>
           <div><h3>와이즈버즈 (wisebirds)</h3><p>광고 솔루션의 요구사항 분석부터 TC 설계, 수행, 결과 보고까지 맡고 UI 자동화 스크립트를 유지보수했습니다.</p></div>
           <span class="role">테스트 엔지니어</span>
@@ -181,8 +181,8 @@
           <h3>Incident Dashboard</h3>
           <dl>
             <dt>PAIN POINT</dt><dd>Incident 현황은 스프레드시트 수식으로 만든 표와 차트로만 볼 수 있었습니다. 누락된 값은 배경색으로만 드러났고, 연도별로 보면 해를 넘긴 이슈 때문에 완료전이 음수가 되었습니다.</dd>
-            <dt>APPROACH</dt><dd>JIRA → 시트 갱신은 그대로 두고, 시트 수식과 같은 규칙으로 집계하는 Streamlit 대시보드를 만들었습니다. 조건부 서식 규칙을 코드로 옮겨 누락 데이터를 표시하고, 갱신 마커와 실행 잠금으로 자동 반영과 동시 실행 방지를 처리했습니다.</dd>
-            <dt>STACK</dt><dd>Python · Streamlit · pandas · JIRA REST API · gspread · APScheduler · Slack Bolt</dd>
+            <dt>APPROACH</dt><dd>JIRA → 시트 갱신은 그대로 두고, 시트 수식과 같은 규칙으로 집계하는 Streamlit 대시보드를 만들었습니다. 조건부 서식 규칙을 코드로 옮겨 누락 데이터를 표시하고, 갱신 마커와 실행 잠금으로 자동 반영과 동시 실행 방지를 처리했습니다. 서버 PC에 닿지 않는 사내망 대역을 위해 같은 화면을 정적 페이지로 만들어 GitHub Pages에 자동 배포합니다.</dd>
+            <dt>STACK</dt><dd>Python · Streamlit · pandas · JIRA REST API · gspread · APScheduler · Slack Bolt · GitHub Pages</dd>
             <dt class="hl">RESULT</dt><dd>대시보드로 인시던트 관리와 재발방지 프로그램을 운영해, 월 평균 Incident를 <b>33건에서 2.5건으로 약 92%</b> 줄였습니다. 누적 332건 중 302건은 리뷰(재발방지 논의)까지 마쳤습니다.</dd>
           </dl>
           <span class="card-foot">핀다 (FINDA) · 사내 저장소 · 비공개 · <a href="./automation/incident-dashboard.html">문서 보기 →</a></span>

@@ -87,16 +87,15 @@ h1 {
 }
 .journey .row.head { border-top: 0; padding: 12px 18px; font-family: var(--mono); font-size: 11px; font-weight: 600; border-bottom: 2px solid var(--rule); }
 .journey .row.dark { background: var(--ink); color: var(--white); }
-.journey .row.soft { background: var(--accent-soft); }
+/* 경력 행 줄무늬: head(1)·핀다(2, dark) 다음부터 짝수 번째 행에 옅은 배경 */
+.journey .row:not(.head):not(.dark):nth-child(even) { background: #eef3fd; }
 .stage { color: var(--blue); }
 .journey .row.dark .stage { color: var(--accent-soft); }
-.journey .row.soft .stage { color: var(--ink); }
 .stage, .term { font-family: var(--mono); font-size: 11px; font-weight: 600; }
 .term { text-align: right; }
 .journey h3 { margin: 0 0 6px; font-size: 18px; }
 .journey .row p { margin: 0; font-size: 13px; color: var(--sub); }
 .journey .row.dark p { color: #c3cde3; }
-.journey .row.soft p { color: var(--ink); }
 .role { font-size: 13px; font-weight: 700; }
 .result { margin: 0; padding: 0; list-style: none; font-size: 13px; font-weight: 500; }
 .result li { margin: 3px 0; }
