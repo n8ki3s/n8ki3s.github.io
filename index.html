@@ -170,7 +170,7 @@
           <dl>
             <dt>PAIN POINT</dt><dd>LLM이 한국어 시나리오를 매번 다르게 해석해서 실패 원인을 추적하기 어려웠고, OS 차이로 시나리오가 나뉘기 시작했습니다.</dd>
             <dt>APPROACH</dt><dd>오픈소스 Go 러너를 포크해 테스트는 YAML로 고정하고, OS 차이는 드라이버에서, LLM은 실패 복구에만 쓰도록 재구성했습니다.</dd>
-            <dt>STACK</dt><dd>Go · UIAutomator2 · WebDriverAgent · Python · Vault · Codex CLI</dd>
+            <dt>STACK</dt><dd>Go · UIAutomator2 · WebDriverAgent · Python · Vault · Codex CLI · Slack Bolt</dd>
             <dt class="hl">RESULT</dt><dd>플로우 44개 · 스텝 약 3,300개를 하나의 YAML로 두 OS에서 실행합니다. 회귀 시간은 Android 약 79%, iOS 약 51% 줄었습니다.</dd>
           </dl>
           <span class="card-foot">핀다 (FINDA) · 사내 저장소 · 비공개 · <a href="./automation/finda-automation.html">문서 보기 →</a></span>

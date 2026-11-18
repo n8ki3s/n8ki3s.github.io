@@ -18,6 +18,7 @@
       <a href="#background">BACKGROUND</a>
       <a href="#architecture">ARCHITECTURE</a>
       <a href="#contribution">CONTRIBUTION</a>
+      <a href="#run">RUN</a>
       <a href="#result">RESULT</a>
       <a href="#recovery">RECOVERY</a>
     </nav>
@@ -39,6 +40,7 @@
           <li>WEBDRIVERAGENT</li>
           <li>CODEX CLI</li>
           <li>VAULT</li>
+          <li>SLACK BOLT</li>
           <li>2026.05—NOW</li>
         </ul>
       </div>
@@ -94,9 +96,10 @@
       </div>
 
       <div class="arch">
-        <div class="arch-row" style="--n:3">
+        <div class="arch-row" style="--n:4">
           <div class="arch-node"><b>YAML 플로우 44개</b><span>시나리오 그룹 라벨 포함</span></div>
-          <div class="arch-node"><b>대시보드 실행 패널</b><span>스위트·기기 선택, 실행 잠금</span></div>
+          <div class="arch-node"><b>대시보드 실행 탭</b><span>시나리오 체크 트리, 스위트별 순차 실행</span></div>
+          <div class="arch-node"><b>Slack 실행 모달</b><span>스위트·플랫폼·연결 기기 선택, 채널 알림</span></div>
           <div class="arch-node"><b>Vault</b><span>테스트 계정 비밀값</span></div>
         </div>
         <div class="arch-down">↓</div>
@@ -172,8 +175,10 @@
           <p class="role-line">05 · OPERATION</p>
           <h3 class="ko">운영 도구</h3>
           <ul>
-            <li>대시보드에서 스위트를 실행하고 진행 상황을 실시간으로 확인합니다.</li>
+            <li>대시보드에서 시나리오를 골라 실행하고 진행 상황을 실시간으로 확인합니다.</li>
             <li>실행 잠금을 두어 같은 기기에서 두 실행이 동시에 돌지 않게 했습니다.</li>
+            <li>Slack 모달에서도 스위트·플랫폼·연결된 실기기를 골라 실행합니다. 플랫폼을 바꾸면 해당 OS에 연결된 기기 목록으로 다시 채우고, 이전 OS에서 고른 기기가 제출되지 않도록 선택값을 플랫폼별로 분리했습니다.</li>
+            <li>대시보드·Slack·커맨드 중 어디서 실행하든 잠금 파일을 감시해 채널에 진행 상황을 갱신하고, 끝나면 통과·실패·중단 수와 리포트 링크를 쓰레드로 알립니다. 채널 메시지의 [중지] 버튼으로 실행을 멈출 수 있습니다.</li>
             <li>테스트 계정 정보는 Vault에서 가져오고, 리포트와 LLM 프롬프트에서는 마스킹합니다.</li>
           </ul>
         </div>
@@ -186,6 +191,53 @@
           </ul>
         </div>
       </div>
+
+      <figure class="shot">
+        <img src="./img/finda/overview.png" alt="Finda Automation 대시보드 개요 화면: 정식 실행 집계와 플로우 통과율 추이" loading="lazy">
+        <figcaption>실제 데이터 · 대시보드 개요 · 정식 실행(ci)만 집계한 통과율과 추이, 개발 실행은 건수만 안내</figcaption>
+      </figure>
+    </section>
+
+    <section class="floor" id="run">
+      <div class="floor-head">
+        <h2 class="floor-title">- RUN</h2>
+        <p class="floor-sub">필요한 시나리오만,<br>골라서 실행합니다.</p>
+        <p class="floor-lead">대시보드에서는 스위트 하나나 플로우 하나만 드롭다운으로 골라 실행할 수 있었습니다. 실패한 시나리오 몇 개만 다시 돌리거나 여러 스위트를 한 번에 돌리려면 터미널을 써야 했습니다. 그래서 실행 탭을 시나리오 체크 트리로 바꿔, 원하는 시나리오만 골라 실행하도록 만들었습니다.</p>
+      </div>
+
+      <div class="modules">
+        <div class="module dark">
+          <p class="role-line">01 · CHECK TREE</p>
+          <h3 class="ko">시나리오 체크 트리</h3>
+          <ul>
+            <li>왼쪽에는 스위트별 체크박스 트리(검색, 전체 펼치기·접기, 전체 선택·해제, 선택 개수)를, 오른쪽에는 기기 선택과 미리보기를 두었습니다.</li>
+            <li>시나리오를 누르면 단계(label) 목록이 나오고, 단계를 누르면 리포트와 같은 문구로 하위 커맨드가 펼쳐집니다.</li>
+            <li>실행·중단 버튼은 제목 행에 두어 항상 보이게 했습니다. 첫 리포트가 나오면 트리를 한 줄 요약으로 접고, 끝나면 실행 이력으로 이동해 방금 실행한 행을 강조합니다.</li>
+          </ul>
+        </div>
+        <div class="module">
+          <p class="role-line">02 · QUEUE</p>
+          <h3 class="ko">스위트별 순차 실행</h3>
+          <ul>
+            <li>리포트 하나에는 실행 구분(lane)이 하나뿐이어서, 여러 스위트를 고르면 서버 대기열이 스위트마다 한 번씩 차례로 실행해 리포트를 따로 만듭니다.</li>
+            <li>시나리오가 실패해도 남은 스위트는 계속 실행합니다. 기기 연결 끊김이나 Vault 오류처럼 리포트 없이 끝난 스위트가 있으면 남은 스위트를 취소합니다.</li>
+          </ul>
+        </div>
+        <div class="module">
+          <p class="role-line">03 · LANE · LOCK</p>
+          <h3 class="ko">지표 보호와 잠금 유지</h3>
+          <ul>
+            <li>스위트 전체를 고른 실행만 정식(ci)으로, 일부만 고른 실행은 개발(dev)로 집계합니다. 실패한 시나리오만 다시 돌린 결과가 통과율을 부풀리지 않게 하려는 결정입니다.</li>
+            <li>판정은 화면이 아니라 서버가 실행 시점의 폴더 내용과 비교해서 합니다.</li>
+            <li>대기열이 도는 동안 서버가 실행 잠금을 계속 잡고, 자신이 띄운 하위 실행에만 토큰을 넘겨 통과시킵니다. 스위트 사이에 Slack 봇이나 터미널 실행이 끼어들지 못합니다.</li>
+          </ul>
+        </div>
+      </div>
+
+      <figure class="shot">
+        <img src="./img/finda/run.png" alt="대시보드 실행 탭: 시나리오 체크 트리와 단계 미리보기" loading="lazy">
+        <figcaption>실제 화면 · 실행 탭 · 신용대출 일부(dev)와 전세대출 전체(ci)를 함께 고른 상태, 단계를 펼쳐 하위 커맨드 확인 · 시나리오·커맨드 내용은 모자이크 처리</figcaption>
+      </figure>
     </section>
 
     <section class="floor" id="result">
@@ -216,6 +268,11 @@
         <div class="row"><b>사업자대출</b><span>10</span><span>15.9</span><span>33.5</span></div>
         <div class="row"><b>전세대출</b><span>8</span><span>15.1</span><span>43.4</span></div>
       </div>
+
+      <figure class="shot">
+        <img src="./img/finda/history.png" alt="실행 이력 화면: 날짜별 정식 실행 결과와 통과율" loading="lazy">
+        <figcaption>실제 데이터 · 실행 이력 · 날짜별 통과·실패·중단 비율, 개발 실행은 괄호로 따로 표시</figcaption>
+      </figure>
     </section>
 
     <section class="floor" id="recovery">
@@ -252,6 +309,11 @@ no such element
 로딩 인디케이터도 보이지 않아 복구 액션을 추측할 수 없음.</span></pre>
         </div>
       </div>
+
+      <figure class="shot">
+        <img src="./img/finda/recovery.png" alt="리포트에서 LLM 복구로 통과한 스텝의 복구 근거와 화면" loading="lazy">
+        <figcaption>실제 리포트 · iOS 신용대출2 · '직장명*' 앵커를 찾지 못한 스텝을 LLM이 화면을 보고 다시 선택해 복구 · 시나리오·커맨드 내용은 모자이크 처리</figcaption>
+      </figure>
     </section>
 
     <footer class="contact">
